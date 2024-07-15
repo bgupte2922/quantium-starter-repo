@@ -1,29 +1,44 @@
-import pandas as pd
+import csv
+import os
 
-# File paths for the three CSV files
-file_paths = ['C:/Users/Bhagyashree/workspace_python/QuantiumSoftwareEngineeringVirtualInternship/quantium-starter-repo/data/daily_sales_data_0.csv',
-              'C:/Users/Bhagyashree/workspace_python/QuantiumSoftwareEngineeringVirtualInternship/quantium-starter-repo/data/daily_sales_data_1.csv',
-              'C:/Users/Bhagyashree/workspace_python/QuantiumSoftwareEngineeringVirtualInternship/quantium-starter-repo/data/daily_sales_data_2.csv']
+DATA_DIRECTORY = "./data"
+OUTPUT_FILE_PATH = "./formatted_data.csv"
 
-# List to store the dataframes after processing
-dfs = []
+# open the output file
+with open(OUTPUT_FILE_PATH, "w") as output_file:
+    writer = csv.writer(output_file)
 
-# Reading each CSV file and filtering rows based on product type
-for file_path in file_paths:
-    df = pd.read_csv(file_path)
-    df = df[df['product'] == 'pink morsel'] # Keep only rows with 'pink morsel'
-    df['sales'] = df['quantity'] * df['price'] # Calculate sales
-    df = df[['sales', 'date', 'region']] # Select required columns
-    dfs.append(df)
+    # add a csv header
+    header = ["sales", "date", "region"]
+    writer.writerow(header)
 
-# Concatenate all dataframes into one
-combined_df = pd.concat(dfs, ignore_index=True)
+    # iterate through all files in the data directory
+    for file_name in os.listdir(DATA_DIRECTORY):
+        # open the csv file for reading
+        with open(f"{DATA_DIRECTORY}/{file_name}", "r") as input_file:
+            reader = csv.reader(input_file)
+            # iterate through each row in the csv file
+            row_index = 0
+            for input_row in reader:
+                # if this row is not the csv header, process it
+                if row_index > 0:
+                    # collect data from row
+                    product = input_row[0]
+                    raw_price = input_row[1]
+                    quantity = input_row[2]
+                    transaction_date = input_row[3]
+                    region = input_row[4]
 
-# Write to output CSV
-output_file = 'output.csv'
-combined_df.to_csv(output_file, index=False)
+                    # if this is a pink morsel transaction, process it
+                    if product == "pink morsel":
+                        # finish formatting data
+                        price = float(raw_price[1:])
+                        sale = price * int(quantity)
 
-print(f"Data processing completed. Output saved to {output_file}")
+                        # write the row to output file
+                        output_row = [sale, transaction_date, region]
+                        writer.writerow(output_row)
+                row_index += 1
 
 """
 To run above code:
