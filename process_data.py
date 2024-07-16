@@ -2,7 +2,7 @@ import csv
 import os
 
 DATA_DIRECTORY = "./data"
-OUTPUT_FILE_PATH = "./formatted_data.csv"
+OUTPUT_FILE_PATH = "sales_visualizer_app/data1/formatted_data.csv"
 
 # open the output file
 with open(OUTPUT_FILE_PATH, "w") as output_file:
