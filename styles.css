@@ -1,0 +1,24 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+#header {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#region-selector {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#visualization {
+    margin-top: 20px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    background-color: #fff;
+    padding: 20px;
+}

@@ -1,6 +1,6 @@
 import pandas
-from dash import Dash, html, dcc
-from plotly.express import line
+from dash import Dash, html, dcc, Input, Output
+import plotly.express as px
 
 # the path to the formatted data file
 DATA_PATH = "./formatted_data.csv"
@@ -12,26 +12,48 @@ data = data.sort_values(by="date")
 # initialize dash
 dash_app = Dash(__name__)
 
-# create the visualization
-line_chart = line(data, x="date", y="sales", title="Pink Morsel Sales")
-visualization = dcc.Graph(
-    id="visualization",
-    figure=line_chart
-)
+# define visualization function using Plotly Express
+def generate_line_chart(selected_region):
+    if selected_region == 'all':
+        filtered_data = data # show all data
+    else:
+        filtered_data = data[data['region'] == selected_region]
 
-# create the header
-header = html.H1(
-    "Pink Morsel Visualizer",
-    id="header"
-)
+    line_fig = px.line(filtered_data, x='date', y='sales', title='Pink Morsel Sales')
+    return line_fig
 
-# define the app layout
-dash_app.layout = html.Div(
-    [
-        header,
-        visualization
-    ]
+# define app layout
+dash_app.layout = html.Div([
+    html.H1("Pink Morsel Visualizer", id="header"),
+
+    dcc.RadioItems(
+        id='region-selector',
+        options=[
+            {'label': 'North', 'value': 'north'},
+            {'label': 'East', 'value': 'east'},
+            {'label': 'South', 'value': 'south'},
+            {'label': 'West', 'value': 'west'},
+            {'label': 'All', 'value': 'all'}
+        ],
+        value='all', # default value
+        labelStyle={'display': 'inline-block', 'margin': '10px'}
+    ),
+    dcc.Graph(id="visualization"),
+])
+
+# define callback to update graph based on selected region
+@dash_app.callback(
+    Output('visualization', 'figure'),
+    [Input('region-selector', 'value')]
 )
+def update_graph(selected_region):
+    line_chart = generate_line_chart(selected_region)
+    return line_chart
+
+# add CSS styling
+dash_app.css.append_css({
+    'external-url': 'style.css'
+})
 
 # this is only true if the module is executed as the program entrypoint
 if __name__ == '__main__':
