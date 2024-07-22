@@ -1,19 +1,28 @@
 #!/bin/bash
 
-# Activate the virtual environment (adjust the path if necessary)
-source /path/to/your/virtualenv/bin/activate
+# activate the virtual environment
+. ./venv/bin/activate
 
-# Navigate to your project directory (if not already there)
-cd C:/Users/Bhagyashree/workspace_python/QuantiumSoftwareEngineeringVirtualInternship/quantium-starter-repo
+# run the test suite
+python -m pytest test_pink_morsel_visualizer.py
 
-# Run the test suite
-python -m unittest discover -s tests/  # Replace with your actual test command
+# collect exit code from pytest
+# exit code is 0 if all tests pass
+PYTEST_EXIT_CODE=$?
 
-# Capture the exit code of the previous command
-exit_code=$?
+# return exit code 0 if all tests pass or 1 otherwise
+if [ $PYTEST_EXIT_CODE -eq 0 ]
+then
+  exit 0
+else
+  exit 1
+fi
 
-# Deactivate the virtual environment
-deactivate
+#To run above code:
+#1. Open Git Bash as administrator
+#2. Navigate to the directory where test_pink_morsel_visualizer.py and run_tests.sh is saved using the cd command.
+#3. Enter below commands:
+#chmod +x run_tests.sh # Make Sure the Script is Executable
+#./run_tests.sh # Run the Script
 
-# Exit with the captured exit code
-exit $exit_code
+
